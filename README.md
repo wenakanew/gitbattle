@@ -46,6 +46,7 @@ See the [proposal](GitBattle_Project_Proposal.md) for full game rules, architect
 | [`MAINTAINERS.md`](MAINTAINERS.md) | Project maintainers and contact |
 | [`docs/OPEN_SOURCE_CHECKLIST.md`](docs/OPEN_SOURCE_CHECKLIST.md) | Steps before/after publishing on GitHub |
 | [`docs/PRIVACY_POLICY_TEMPLATE.md`](docs/PRIVACY_POLICY_TEMPLATE.md) | Privacy policy draft outline (OAuth / GDPR-style) |
+| [`github/rulesets/README.md`](github/rulesets/README.md) | GitHub **repository rulesets** (branch/tag JSON + apply instructions) |
 
 ---
 

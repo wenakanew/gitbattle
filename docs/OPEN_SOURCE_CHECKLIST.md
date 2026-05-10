@@ -33,6 +33,7 @@ git push -u origin main
 
 - [ ] Complete GitHub **Community Standards** (README, CONTRIBUTING, Code of Conduct, Security).
 - [ ] Add repository **topics** (e.g. `git`, `education`, `multiplayer`, `game`, `socket-io`, `typescript`).
+- [ ] Optional: apply **[repository rulesets](../github/rulesets/README.md)** (`POST` the JSON bodies or mirror them in **Settings → Rules → Rulesets**).
 
 ## Releases
 
