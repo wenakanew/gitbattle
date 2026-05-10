@@ -10,6 +10,10 @@ These JSON files match the body shape for GitHub’s **[Create a repository rule
 | [`default-branch-with-required-review.json`](default-branch-with-required-review.json) | Stricter: **1** approval, **CODEOWNERS** review when paths match [`.github/CODEOWNERS`](../../.github/CODEOWNERS), resolved review threads required — switch to this when you have regular collaborators. |
 | [`release-tags.json`](release-tags.json) | Protects tags matching `v*` and `release-*` from deletion and force-updates. |
 
+Each ruleset includes **`bypass_actors`** so **only the built-in _Admin_ repository role** can bypass rules (direct pushes, merge without meeting checks, etc.). On a **personal** repo such as **wenakanew/gitbattle**, that is normally **only the owning account**, as long as you never grant collaborators **Admin**.
+
+`actor_id` **`5`** + `actor_type` **`RepositoryRole`** is the usual GitHub.com mapping for **Admin**. If `POST` fails with an invalid actor error, create the bypass once in the UI (**Ruleset → Bypass list → Repository admin**), then run `gh api repos/wenakanew/gitbattle/rulesets/RULESET_ID` and copy the `bypass_actors` GitHub returns into these JSON files.
+
 `~DEFAULT_BRANCH` targets whatever branch GitHub marks as default (usually `main`).
 
 ---
@@ -40,9 +44,25 @@ To **replace** an existing ruleset, note its numeric `id` from `gh api repos/wen
 
 ---
 
-## Bypass actors (maintainers)
+## Push blocked with “Changes must be made through a pull request”?
 
-For **organization** repos you can add `bypass_actors` (teams, admin roles). On **personal** repositories, repository admins typically retain bypass capability through GitHub’s UI behavior; for API-created rulesets see **[bypass actors](https://docs.github.com/en/rest/repos/rules#create-a-repository-ruleset)** (`RepositoryRole`, `Team`, etc.) and set numeric `actor_id` values from the GitHub API.
+That means **`main` is protected** and your ruleset does **not** grant **your account** a bypass (yet).
+
+**Option A — Use a branch + PR (always works):**
+
+```bash
+git checkout -b chore/sync-main
+git push -u origin chore/sync-main
+```
+
+Open a PR **into `main`** on GitHub and merge it.
+
+**Option B — Allow yourself to bypass (repo Admin only):**
+
+1. Repo → **Settings** → **Rules** → **Rulesets** → open the ruleset that targets **`main`**.
+2. Under **Bypass list**, add **Repository admin** (only). Save.
+
+Then **`git push origin main`** works for the owning admin account; collaborators without Admin still must use PRs.
 
 ---
 
