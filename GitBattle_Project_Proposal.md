@@ -1,6 +1,6 @@
 # GitBattle: A Real-Time Multiplayer 1v1 Battle Game for Learning Git
 ### Project Proposal — Version 1.0
-**Author:** [Your Name]
+**Author:** Kaniu Jeffray Muthondu
 **Course/Program:** Computer Science, Year 2
 **Date:** May 2026
 
@@ -898,5 +898,5 @@ The question it answers — *"what if learning Git was actually fun?"* — is on
 
 ---
 
-*Proposal prepared by [Your Name] | CS Year 2 | May 2026*
+*Proposal prepared by Kaniu Jeffray Muthondu | CS Year 2 | May 2026*
 *Feedback and questions welcome.*
