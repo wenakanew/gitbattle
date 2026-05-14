@@ -1,22 +1,26 @@
 # Third-party notices
 
-GitBattle may include third-party software, fonts, icons, sounds, or other assets. Each must remain compliant with its license.
+Runtime dependencies ship under their respective licenses via npm. Inspect exact versions in the repository **`package-lock.json`**. Highlights (not exhaustive):
 
-## Current status
+| Package / stack | SPDX / license type | Notes |
+|-------------------|---------------------|-------|
+| [React](https://github.com/facebook/react), [React DOM](https://github.com/facebook/react) | MIT | Frontend UI |
+| [Vite](https://github.com/vitejs/vite) | MIT | Frontend build |
+| [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) | MIT | Styles |
+| [TanStack Query](https://github.com/TanStack/query) | MIT | Data fetching (`@tanstack/react-query`) |
+| [Express](https://github.com/expressjs/express) | MIT | HTTP API |
+| [Prisma](https://github.com/prisma/prisma) | Apache-2.0 | ORM (`prisma`, `@prisma/client`) |
+| [Socket.IO](https://github.com/socketio/socket.io) | MIT | WebSockets (server attached; browser client wired next) |
+| [Passport](https://github.com/jaredhanson/passport), [`passport-github2`](https://github.com/jaredhanson/passport-github2) | MIT | OAuth |
+| [`jsonwebtoken`](https://github.com/auth0/node-jsonwebtoken) | MIT | JWT session cookie signing |
+| [Helmet](https://github.com/helmetjs/helmet), [cors](https://github.com/expressjs/cors), [cookie-parser](https://github.com/expressjs/cookie-parser) | MIT | Security / HTTP helpers |
+| [ioredis](https://github.com/redis/ioredis) | Apache-2.0 | Redis client |
+| [`zod`](https://github.com/colinhacks/zod) | MIT | Env validation |
 
-**No application dependencies are bundled in this repository yet.** This file will be updated when:
+For full attribution text where required by a license, see each package under `node_modules/<name>/` after install.
 
-- `package.json` / lockfiles exist (list key runtime libraries and their licenses), and/or
-- Binary or creative assets (fonts, icons, audio) are added.
-
-## How to update this file
-
-When adding a dependency or asset:
-
-1. Record the **name**, **version** (if applicable), **copyright holder**, and **license** (e.g. MIT, Apache-2.0, SIL OFL).
-2. Include **full license text** only when required (e.g. some copyleft or attribution clauses); otherwise a short notice plus SPDX identifier is often enough.
-3. Link to the **upstream project** URL.
+Fonts, icons, and audio assets are not vendored yet; add rows here when you bundle them.
 
 ## Proposal-phase materials
 
-The [**GitBattle_Project_Proposal.md**](GitBattle_Project_Proposal.md) references planned technologies (React, PostgreSQL, Redis, etc.). Licensing for those stacks follows each upstream project; no redistribution of those projects exists in-tree until dependencies are declared in the repo.
+The [**GitBattle_Project_Proposal.md**](GitBattle_Project_Proposal.md) references Docker images (PostgreSQL, Redis); those images are governed by their upstream licenses when you pull them locally or in CI.

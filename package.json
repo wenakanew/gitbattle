@@ -1,0 +1,25 @@
+{
+  "name": "gitbattle",
+  "private": true,
+  "description": "Real-time multiplayer Git command battle game — monorepo",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,web -c blue,green \"npm run dev -w @gitbattle/server\" \"npm run dev -w @gitbattle/web\"",
+    "dev:server": "npm run dev -w @gitbattle/server",
+    "dev:web": "npm run dev -w @gitbattle/web",
+    "build": "npm run build -w @gitbattle/server && npm run build -w @gitbattle/web",
+    "test": "npm run test -w @gitbattle/server",
+    "lint": "npm run lint -w @gitbattle/server --if-present && npm run lint -w @gitbattle/web --if-present",
+    "db:generate": "npm run db:generate -w @gitbattle/server",
+    "db:migrate": "npm run db:migrate -w @gitbattle/server",
+    "db:studio": "npm run db:studio -w @gitbattle/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
