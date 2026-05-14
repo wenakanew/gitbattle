@@ -37,7 +37,6 @@ function Terrain() {
       const geometry = meshRef.current.geometry as THREE.PlaneGeometry;
       const positionAttr = geometry.attributes.position as THREE.BufferAttribute;
       if (!positionAttr) return;
-      const positions = positionAttr.array as Float32Array;
       
       for (let i = 0; i < positionAttr.count; i++) {
         const x = positionAttr.getX(i);
@@ -235,7 +234,7 @@ export function Scene3D() {
       <LeaderboardMonument />
 
       {/* AAA Post Processing */}
-      <EffectComposer disableNormalPass>
+      <EffectComposer enableNormalPass={false}>
         <Bloom luminanceThreshold={0.5} mipmapBlur intensity={1.5} />
         <Noise opacity={0.025} />
         <Vignette eskil={false} offset={0.1} darkness={1.1} />
