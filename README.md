@@ -2,7 +2,7 @@
 
 **GitBattle** is a real-time, browser-based **1v1 strategy game** where players type **Git commands** (`git add`, `git commit`, `git push`, `git merge`, …) as battle mechanics. The goal is **learning Git through competitive play**—with GitHub authentication, room-based matchmaking, spectators, and leaderboards.
 
-> **Status:** Early stage — design and specification are documented in [`GitBattle_Project_Proposal.md`](GitBattle_Project_Proposal.md). Application code is not yet implemented in this repository.
+> **Status:** Phase 1 **in progress** — monorepo with API, web app, Prisma schema, and GitHub OAuth (JWT cookie) is implemented. Gameplay (rooms, parser, match engine) is **not** built yet. See [`GitBattle_Project_Proposal.md`](GitBattle_Project_Proposal.md).
 
 **Repository:** [github.com/wenakanew/gitbattle](https://github.com/wenakanew/gitbattle) · **Clone:** `git clone https://github.com/wenakanew/gitbattle.git`
 
@@ -27,6 +27,51 @@ See the [proposal](GitBattle_Project_Proposal.md) for full game rules, architect
 | Backend | Node.js, Express, Socket.IO, Passport.js (GitHub OAuth), JWT |
 | Data | PostgreSQL (Prisma), Redis |
 | Deploy | Railway (API + DB), Vercel (frontend), GitHub Actions (CI) |
+
+---
+
+## Monorepo layout
+
+| Path | Description |
+|------|-------------|
+| [`apps/server`](apps/server) | Express API, Prisma, Passport (GitHub), Socket.IO, JWT session cookie |
+| [`apps/web`](apps/web) | Vite + React + Tailwind SPA (home + dashboard) |
+
+---
+
+## Local development
+
+**Requirements:** Node 20+, Docker (for Postgres + Redis).
+
+1. Start databases:
+
+   ```bash
+   docker compose up -d
+   ```
+
+2. Configure the server — copy [`.env.example`](.env.example) to `apps/server/.env` and adjust secrets. For GitHub sign-in, create an OAuth app and set **Authorization callback URL** to  
+   `http://localhost:5173/auth/github/callback`  
+   (same as `GITHUB_CALLBACK_URL` in `.env`) so cookies stay on the dev origin with Vite’s proxy.
+
+3. Install and sync the database schema:
+
+   ```bash
+   npm install
+   cd apps/server && npx prisma migrate dev --name init && cd ../..
+   ```
+   On first run Prisma creates `apps/server/prisma/migrations/`. Alternatively, from the repo root:  
+   `npx prisma db push --schema apps/server/prisma/schema.prisma` (no migration history; fine for experiments).
+
+4. Run both apps (two processes in one terminal):
+
+   ```bash
+   npm run dev
+   ```
+
+   - Web: [http://localhost:5173](http://localhost:5173)  
+   - API + Socket.IO: [http://localhost:4000](http://localhost:4000) (`GET /health`)
+
+   In dev, leave `VITE_API_URL` unset (see [`apps/web/.env.example`](apps/web/.env.example)) so the browser calls `/auth/*` on **:5173** and Vite proxies to the API.
 
 ---
 

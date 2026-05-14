@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Phase 1 app scaffold: npm workspaces, `apps/server` (Express, Prisma schema, GitHub OAuth → JWT cookie, health checks, Socket.IO), `apps/web` (Vite, React, Tailwind, dashboard), Docker Compose for Postgres/Redis, GitHub Actions CI.
 - Open-source governance and documentation (README, CONTRIBUTING, Code of Conduct, Security policy, GitHub templates).
 
 ---

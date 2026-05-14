@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoomType {
+  rookie
+  developer
+  senior
+  speedrun
+}
+
+enum MatchStatus {
+  pending
+  active
+  completed
+  aborted
+}
+
+model User {
+  id             String    @id @default(uuid())
+  githubId       String    @unique @map("github_id")
+  username       String
+  avatarUrl      String?   @map("avatar_url")
+  githubBio      String?   @map("github_bio")
+  elo            Int       @default(1000)
+  matchesPlayed  Int       @default(0) @map("matches_played")
+  matchesWon     Int       @default(0) @map("matches_won")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  lastActive     DateTime? @map("last_active")
+
+  roomsAdmin   Room[]       @relation("RoomAdmin")
+  roomMembers  RoomMember[]
+  matchesAsA   Match[]      @relation("PlayerA")
+  matchesAsB   Match[]      @relation("PlayerB")
+  matchesWonRel Match[]     @relation("Winner")
+  badges       Badge[]
+
+  @@map("users")
+}
+
+model Room {
+  id           String   @id @default(uuid())
+  name         String
+  roomCode     String   @unique @map("room_code")
+  adminId      String   @map("admin_id")
+  admin        User     @relation("RoomAdmin", fields: [adminId], references: [id])
+  roomType     RoomType @map("room_type")
+  maxPlayers   Int      @default(20) @map("max_players")
+  isActive     Boolean  @default(true) @map("is_active")
+  isPublic     Boolean  @default(true) @map("is_public")
+  turnDuration Int      @default(30) @map("turn_duration")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  members RoomMember[]
+  matches Match[]
+
+  @@map("rooms")
+}
+
+model RoomMember {
+  id       String   @id @default(uuid())
+  roomId   String   @map("room_id")
+  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId   String   @map("user_id")
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt DateTime @default(now()) @map("joined_at")
+  isActive Boolean  @default(true) @map("is_active")
+
+  @@unique([roomId, userId])
+  @@map("room_members")
+}
+
+model Match {
+  id              String       @id @default(uuid())
+  roomId          String       @map("room_id")
+  room            Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  playerAId       String       @map("player_a_id")
+  playerA         User         @relation("PlayerA", fields: [playerAId], references: [id])
+  playerBId       String       @map("player_b_id")
+  playerB         User         @relation("PlayerB", fields: [playerBId], references: [id])
+  winnerId        String?      @map("winner_id")
+  winner          User?        @relation("Winner", fields: [winnerId], references: [id])
+  status          MatchStatus  @default(pending)
+  totalTurns      Int?         @map("total_turns")
+  playerAHp       Int?         @map("player_a_hp")
+  playerBHp       Int?         @map("player_b_hp")
+  startedAt       DateTime?    @map("started_at")
+  endedAt         DateTime?    @map("ended_at")
+  spectatorCount  Int          @default(0) @map("spectator_count")
+
+  turns MatchTurn[]
+
+  @@map("matches")
+}
+
+model MatchTurn {
+  id              String   @id @default(uuid())
+  matchId         String   @map("match_id")
+  match           Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  turnNumber      Int      @map("turn_number")
+  playerACommand  String?  @map("player_a_command")
+  playerBCommand  String?  @map("player_b_command")
+  playerATroops   Int?     @map("player_a_troops")
+  playerBTroops   Int?     @map("player_b_troops")
+  playerAHp       Int?     @map("player_a_hp")
+  playerBHp       Int?     @map("player_b_hp")
+  resolvedAt      DateTime @default(now()) @map("resolved_at")
+
+  @@map("match_turns")
+}
+
+model Badge {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeType String   @map("badge_type")
+  awardedAt DateTime @default(now()) @map("awarded_at")
+
+  @@map("badges")
+}

@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: gitbattle
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gitbattle
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: ci-secret-not-for-production-32b
+      WEB_ORIGIN: http://localhost:5173
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Sync database schema (ephemeral Postgres)
+        run: npx prisma db push --schema apps/server/prisma/schema.prisma
+
+      - name: Prisma validate
+        run: npx prisma validate --schema apps/server/prisma/schema.prisma
+
+      - name: Lint & test server
+        run: |
+          npx prisma generate --schema apps/server/prisma/schema.prisma
+          npm run lint -w @gitbattle/server
+          npm run test -w @gitbattle/server
+
+      - name: Build apps
+        run: npm run build -w @gitbattle/server && npm run build -w @gitbattle/web
